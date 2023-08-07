@@ -130,6 +130,7 @@
         };
       })();
     </script>
+
     <!-- Import Google Font-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -200,15 +201,13 @@
                 <div class="" id="map" style="height: 100%; width: 100%;"></div>
               </div>
             </div>
-              <!-- prettier-ignore -->
-            <script>(g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})
-                ({key: "AIzaSyBRxabzIjmi27QPEmTgkcCxlpoDckHYe8w", v: "weekly"});
-            </script>
-           <script>
+    
+            <!-- prettier-ignore -->         
+            <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVEAvXOvXnxZtMSjh8ePuHJj6FOBBBe64&callback=initMap" async defer></script>
+            <script>
               let map;
-              async function initMap() {
-                const { Map } = await google.maps.importLibrary("maps");
-                map = new Map(document.getElementById("map"), {
+              function initMap() {
+                map = new google.maps.Map(document.getElementById("map"), {
                   center: { lat: 21.940117, lng: 42.034121 },
                   zoom: 13,
                   mapTypeId: "terrain",
@@ -217,57 +216,78 @@
                   scaleControl: false,
                   streetViewControl: false,
                 });
-        
-                const triangleCoords = [
+          
+                const holeAreaCoord = [
                   { lat: 21.960866, lng: 42.036387 },
                   { lat: 21.925363, lng: 42.021514 },
                   { lat: 21.921282, lng: 42.035033 },
                   { lat: 21.959736, lng: 42.046942 },
                 ];
-                const bermudaTriangle = new google.maps.Polygon({
-                  paths: triangleCoords,
-                  strokeColor: "#FF0000",
-                  strokeOpacity: 0.8,
-                  strokeWeight: 3,
-                  fillColor: "#FF0000",
-                  fillOpacity: 0.35,
-                });
-                bermudaTriangle.setMap(map);
-        
-                // Add markers to the map
-                const markers = [
-                  {
-                    position: { lat: 21.940117, lng: 42.034121 },
-                    title: "Marker 1",
-                    content: " أرض 2848 <br> مساحة 300م",
-                  },
-                  {
-                    position: { lat: 21.960866, lng: 42.036387 },
-                    title: "Marker 2",
-                    content: " أرض 2848 <br> مساحة 300م",
-                  },
-                  {
-                    position: { lat: 21.925363, lng: 42.021514 },
-                    title: "Marker 3",
-                    content: " أرض 2848 <br> مساحة 300م",
-                  },
-                  {
-                    position: { lat: 21.921282, lng: 42.035033 },
-                    title: "Marker 4",
-                    content: " أرض 2848 <br> مساحة 300م",
-                  },
-                  {
-                    position: { lat: 21.959736, lng: 42.046942 },
-                    title: "Marker 5",
-                    content: " أرض 2848 <br> مساحة 300م",
-                  },
+                const greenAreaCoord = [
+                  { lat: 21.933593, lng: 42.030539 },
+                  { lat: 21.933185, lng: 42.031802 },
+                  { lat: 21.932718, lng: 42.031625 },
+                  { lat: 21.933175, lng: 42.030380 },
                 ];
-        
-                markers.forEach((markerInfo) => {
+                const redAreaCoord = [
+                  { lat: 21.933220, lng: 42.031840 },
+                  { lat: 21.933494, lng: 42.031120 },
+                  { lat: 21.934449, lng: 42.031507 },
+                  { lat: 21.934210, lng: 42.032194 },
+                ];
+          
+                // Create polygons
+                const redAreaShow = new google.maps.Polygon({
+                paths: redAreaCoord,
+                strokeColor: "#ff0000",
+                strokeOpacity: .1,
+                strokeWeight: 3,
+                fillColor: "#ff0000",
+                fillOpacity: 0.7,
+              });
+
+              const greenAreaShow = new google.maps.Polygon({
+                paths: greenAreaCoord,
+                strokeColor: "#0fdb00",
+                strokeOpacity: 0.1,
+                strokeWeight: 3,
+                fillColor: "#0fdb00",
+                fillOpacity: 0.7,
+              });
+
+              const holeAreaShow = new google.maps.Polygon({
+                paths: holeAreaCoord,
+                strokeColor: "#faef73",
+                strokeOpacity: 1,
+                strokeWeight: 3,
+                fillColor: "#faef73",
+                fillOpacity: 0.3,
+              });
+
+              // Add markers to the map
+              const markers = [
+                {
+                  position: { lat: 21.933210, lng: 42.031045 },
+                  title: "2848",
+                  content: "<h6> متاحة </h6> <h6> رقم الأرض: 2848</h6> <h6> المساحة: 460م </h6>",
+                  
+                },
+                {
+                  position: { lat: 21.933827, lng: 42.031630 },
+                  title: "2844",
+                  content: "<h6> غير متاحة </h6> ",
+                },
+              ];
+
+              markers.forEach((markerInfo) => {
                   const marker = new google.maps.Marker({
                     position: markerInfo.position,
                     map: map,
                     title: markerInfo.title,
+                    icon: {
+                      path: google.maps.SymbolPath.CIRCLE,
+                      scale: 0
+                    }
                   });
         
                   const infoWindow = new google.maps.InfoWindow({
@@ -278,8 +298,11 @@
                     infoWindow.open(map, marker);
                   });
                 });
-              }
-              initMap();
+
+              redAreaShow.setMap(map);
+              greenAreaShow.setMap(map);
+              holeAreaShow.setMap(map);
+            }
             </script>
           </div>
         </div>
